@@ -1,5 +1,6 @@
 const express=require('express');
 const dotenv=require('dotenv');
+const mongoose=require('mongoose')
 const app=express();
 dotenv.config();
 
@@ -15,7 +16,11 @@ app.get("/health",(req,res)=>{
         console.log(error)   
     }
 });
-
+mongoose.connect(process.env.DB_URl).then(()=>{
+    console.log("Succesfully connect to DataBase")
+}).catch((err)=>{
+    console.log(err)
+})
 app.listen(process.env.PORT,process.env.HOST,()=>{
     console.log(`Server is Running`)
 })
