@@ -1,9 +1,12 @@
 const express=require('express');
 const dotenv=require('dotenv');
-const mongoose=require('mongoose')
+const bodyParser = require('body-parser');
+const connectDb=require('./config/db.js')
 const app=express();
 dotenv.config();
-
+const {router:registerRoute}=require('./routes/register.route.js')
+const {router:signinRoute}=require('./routes/signin.route.js')
+app.use(express.json());
 // health api
 app.get("/health",(req,res)=>{
     try {
@@ -16,11 +19,9 @@ app.get("/health",(req,res)=>{
         console.log(error)   
     }
 });
-mongoose.connect(process.env.DB_URl).then(()=>{
-    console.log("Succesfully connect to DataBase")
-}).catch((err)=>{
-    console.log(err)
-})
+app.use('/api',registerRoute);
+app.use('/api',signinRoute);
+connectDb();
 app.listen(process.env.PORT,process.env.HOST,()=>{
     console.log(`Server is Running`)
 })
