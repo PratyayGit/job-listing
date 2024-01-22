@@ -1,21 +1,34 @@
 const {User}=require('../models/user.model.js')
 const jwt=require('jsonwebtoken')
-const signin=async(req,res)=>{
+const {errorHandler}=require('../utils/errorhandler.js')
+const bcrypt = require("bcryptjs");
+const signin=async(req,res,next)=>{
     const{email,password}=req.body;
     try {
+        if(!email || !password){
+            return res.status(400).json({
+                errorMessage:"Bad Request"
+            });
+        }
         const validEmail=await User.findOne({email});
         if(!validEmail){
             return res.json("Invalid Login details");
         }
-        const pass=await validEmail.password===password;
+        const pass=bcrypt.compareSync(password,validEmail.password)
         if(!pass){
-            return res.json("Invalid login details");
+             return new next(Error);
         }
         const token=jwt.sign({id:validEmail._id},process.env.JWT_KEY);
-        res.cookie('access_token',token,{httpOnly:true}).status(200).json("successfully login")
+        res
+        .status(200)
+        .json({
+            message:"User logged in successfully",
+            token:token,
+            name:validEmail.name
+        })
         
     } catch (error) {
-        return res.json(error)
+        next(error);
     }
 }
 module.exports={
