@@ -2,11 +2,13 @@ const express=require('express');
 const dotenv=require('dotenv');
 // const bodyParser = require('body-parser');
 const connectDb=require('./config/db.js')
-const {errorHandler}=require('./utils/errorhandler.js')
+const {errorHandler}=require('./middlewere/errorhandler.js')
 const app=express();
 dotenv.config();
+//importing routers
 const {router:registerRoute}=require('./routes/register.route.js')
 const {router:signinRoute}=require('./routes/signin.route.js')
+const {router:createJob}=require('./routes/createjob.route.js')
 app.use(express.json());
 // health api
 app.get("/health",(req,res)=>{
@@ -22,6 +24,7 @@ app.get("/health",(req,res)=>{
 });
 app.use('/api',registerRoute);
 app.use('/api',signinRoute);
+app.use('/api',createJob);
 // Example of using the error handler
 app.use((error, req, res, next) => {
     errorHandler(error, req, res, next);

@@ -1,6 +1,6 @@
 const {User}=require('../models/user.model.js')
 const jwt=require('jsonwebtoken')
-const {errorHandler}=require('../utils/errorhandler.js')
+const {errorHandler}=require('../middlewere/errorhandler.js')
 const bcrypt = require("bcryptjs");
 const signin=async(req,res,next)=>{
     const{email,password}=req.body;
