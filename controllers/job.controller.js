@@ -116,19 +116,36 @@ const jobDescription=async(req,res)=>{
 }
 const getalljob=async(req,res)=>{
     try {
-        const information=req.query.information ||" ";
-        const skills=req.query.skillRequired;
-        let filterSkill=skills?.split(" ");
+        const information=req.query.information ||"";
+        const skillRequired=req.query.skillRequired;
+        const filterSkill=skillRequired?.split(',') || "";
         let filter={};
         if(filterSkill){
-            filter = { skills: { $in: filterSkill } };
+            filter={skillRequired: { $in: filterSkill }}
         }
         const projection = { companyName: 1, skillRequired: 1};
         const joblist=await Job.find(
-            {information:{$regex:information,$options:"i"}},
-            filter,
+            {
+                information:{$regex:information,$options:"i"},
+                ...filter
+            }
             ).select(projection)
         res.json({data:joblist})
+       
+    
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            errorMessage: "Internal Server Error"
+        });
+    }
+}
+const deletjob=async(req,res)=>{
+    try {
+        const jobId=req.params.jobId;
+        const joblist=await Job.deleteOne({_id:jobId});
+        res.json({data:joblist})
+
     } catch (error) {
         console.error(error);
         res.status(500).json({
@@ -141,5 +158,6 @@ module.exports={
     createjob,
     updatejob,
     jobDescription,
-    getalljob
+    getalljob,
+    deletjob
 }
