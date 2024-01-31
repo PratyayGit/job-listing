@@ -8,7 +8,7 @@ dotenv.config();
 //importing routers
 const {router:registerRoute}=require('./routes/register.route.js')
 const {router:signinRoute}=require('./routes/signin.route.js')
-const {router:createJob}=require('./routes/createjob.route.js')
+const {router:jobRoute}=require('./routes/job.route.js')
 app.use(express.json());
 // health api
 app.get("/health",(req,res)=>{
@@ -24,7 +24,8 @@ app.get("/health",(req,res)=>{
 });
 app.use('/api',registerRoute);
 app.use('/api',signinRoute);
-app.use('/api',createJob);
+app.use('/api',jobRoute);
+
 // Example of using the error handler
 app.use((error, req, res, next) => {
     errorHandler(error, req, res, next);
